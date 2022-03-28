@@ -37,4 +37,35 @@ const registerUser =
     });
   });
 
-export { registerUser };
+const loginUser = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.json({
+      errors: [{ msg: 'User not Found' }],
+      data: null,
+    });
+  }
+
+  const isMatchedPassword = await user.comparePassword(password);
+  if (!isMatchedPassword) {
+    return res.json({
+      errors: [{ msg: 'Invalid Credentials' }],
+      data: null,
+    });
+  }
+
+  const token = user.createJWT();
+
+  return res.json({
+    errors: [],
+    data: {
+      id: user._id,
+      email: user._email,
+      token,
+    },
+  });
+};
+
+export { registerUser, loginUser };
