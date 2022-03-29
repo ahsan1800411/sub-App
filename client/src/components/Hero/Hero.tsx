@@ -35,8 +35,12 @@ const Hero = () => {
             Grow, learn and become more successful by reading some of the good
             articles by top reputable individuals.
           </SubHeading>
-          <ModalComponent title='Signup' variant='primary' />
-          <ModalComponent title='Login' variant='danger' />
+          <ModalComponent
+            title='Signup'
+            variant='primary'
+            isSignUpFlow={true}
+          />
+          <ModalComponent title='Login' variant='danger' isSignUpFlow={false} />
         </HeaderContainer>
       </Container>
     </HeroComponent>

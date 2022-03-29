@@ -19,7 +19,7 @@ const registerUser =
     const { email, password } = req.body;
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.json(400).json({
+      return res.status(400).json({
         errors: [{ msg: 'User already exists' }],
         data: null,
       });
@@ -62,10 +62,22 @@ const loginUser = async (req: Request, res: Response) => {
     errors: [],
     data: {
       id: user._id,
-      email: user._email,
+      email: user.email,
       token,
     },
   });
 };
 
-export { registerUser, loginUser };
+const me = async (req: Request, res: Response) => {
+  const user = await User.findOne({ id: req.user });
+
+  return res.json({
+    errors: [],
+    data: {
+      id: user._id,
+      email: user.email,
+    },
+  });
+};
+
+export { registerUser, loginUser, me };

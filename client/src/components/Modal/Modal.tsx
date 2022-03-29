@@ -1,15 +1,59 @@
 import { useState } from 'react';
 import { Button, FormControl, InputGroup, Modal } from 'react-bootstrap';
+import axios from 'axios';
+import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 interface ModalProps {
   title: string;
   variant: 'primary' | 'danger';
+  isSignUpFlow: boolean;
 }
 
-const ModalComponent = ({ title, variant }: ModalProps) => {
+const ErrorMessage = styled.p`
+  color: red;
+`;
+
+const ModalComponent = ({ title, variant, isSignUpFlow }: ModalProps) => {
   const [show, setShow] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const [errorMessage, setErrorMessage] = useState('');
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const navigate = useNavigate();
+
+  const handleClick = async () => {
+    let data;
+    if (isSignUpFlow) {
+      const { data: signUpData } = await axios.post(
+        'http://localhost:8000/auth/signup',
+        {
+          email,
+          password,
+        }
+      );
+
+      data = signUpData;
+    } else {
+      const { data: loginData } = await axios.post(
+        'http://localhost:8000/auth/login',
+        {
+          email,
+          password,
+        }
+      );
+      data = loginData;
+    }
+    if (data.errors.length) {
+      return setErrorMessage(data.errors[0].msg);
+    }
+    localStorage.setItem('token', data.data.token);
+    navigate('/articles');
+  };
+
   return (
     <>
       <Button
@@ -26,18 +70,29 @@ const ModalComponent = ({ title, variant }: ModalProps) => {
         <Modal.Body>
           <InputGroup className='mb-3'>
             <InputGroup.Text>Email</InputGroup.Text>
-            <FormControl type='email' />
+            <FormControl
+              type='email'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </InputGroup>
           <InputGroup>
             <InputGroup.Text>Password</InputGroup.Text>
-            <FormControl type='password' />
+            <FormControl
+              type='password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </InputGroup>
         </Modal.Body>
         <Modal.Footer>
+          {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
           <Button variant='secondary' onClick={handleClose}>
             Close
           </Button>
-          <Button variant='primary'>{title}</Button>
+          <Button variant='primary' onClick={handleClick}>
+            {title}
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

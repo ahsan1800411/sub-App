@@ -1,14 +1,17 @@
 import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from './components/Navbar/Navbar';
-import Hero from './components/Hero/Hero';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import LandingPage from './pages/LandingPage';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (
-    <div>
+    <BrowserRouter>
       <Navbar />
-      <Hero />
-    </div>
+      <Routes>
+        <Route path='/' element={<LandingPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
