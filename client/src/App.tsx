@@ -5,6 +5,7 @@ import LandingPage from './pages/LandingPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ProtectedRoutes from './routes/ProtectedRoutes';
 import Articles from './pages/Articles';
+import ArticlesPlan from './pages/ArticlesPlan';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             </ProtectedRoutes>
           }
         />
+        <Route path='/articles-plan' element={<ArticlesPlan />} />
       </Routes>
     </BrowserRouter>
   );

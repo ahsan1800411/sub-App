@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import connectDatabase from './config/db';
 import authRoutes from '../routes/authRoutes';
+import subsRoutes from '../routes/subsRoutes';
 import cors from 'cors';
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/auth', authRoutes);
+app.use('/subs', subsRoutes);
 
 connectDatabase();
 
