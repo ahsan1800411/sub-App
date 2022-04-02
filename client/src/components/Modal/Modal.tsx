@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Button, FormControl, InputGroup, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../../context';
 
 interface ModalProps {
   title: string;
@@ -18,6 +19,7 @@ const ModalComponent = ({ title, variant, isSignUpFlow }: ModalProps) => {
   const [show, setShow] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [state, setState] = useContext(UserContext);
 
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -50,7 +52,19 @@ const ModalComponent = ({ title, variant, isSignUpFlow }: ModalProps) => {
     if (data.errors.length) {
       return setErrorMessage(data.errors[0].msg);
     }
+
+    setState({
+      data: {
+        id: data.data.id,
+        email: data.data.email,
+      },
+      error: null,
+      loading: false,
+    });
     localStorage.setItem('token', data.data.token);
+    axios.defaults.headers.common[
+      'authorization'
+    ] = `Bearer ${data.data.token}`;
     navigate('/articles');
   };
 
